@@ -1,0 +1,72 @@
+from collections import *
+
+class HyperloopPassenger:
+    def _init_(self,num,start):
+        self.queue=[]
+        self.graph=defaultdict(list)
+        
+        for i in range(num):
+            x,y=input().split()
+            self.graph[x].append(y)
+            self.graph[y].append(x)
+
+        self.res={}
+        q=[[start,[start]]]
+        vis=set()
+        while q:
+            for x in range(len(q)):
+                node,path=q.pop()
+                if node in vis:
+                    continue
+                vis.add(node)
+            
+                for nei in self.graph[node]:
+                    if nei in vis:
+                        if nei==start or nei in self.res and len(path+[nei])>len(self.res[nei]):
+                            continue
+                    
+                    if nei in self.res:
+                        if len(path+[nei])<len(self.res[nei]):
+                            self.res[nei]=path+[nei]
+                            q.append([nei,path+[nei]])
+                        else:
+                            q.append([nei,self.res[nei]])
+                    else:
+                        self.res[nei]=path+[nei]
+                        q.append([nei,path+[nei]])
+        print(self.res)
+                    
+                
+            
+        
+    def  ADD_PASSENGER(self,X):
+        
+        for i in range(X):
+            name,age,dest=input().split()
+            age=int(age)
+            dest=self.res[dest]
+            self.queue.append([name,age,dest])
+
+        self.queue.sort(key=lambda x:-x[1])
+        
+    def START_POD(self,X):
+        for i in range(X):
+            name,age,dest=self.queue.pop(0) 
+            print(name,*dest)
+
+    def PRINT_Q(self):
+        print(len(self.queue))
+        for i in self.queue:
+            print(i)
+
+
+
+obj = HyperloopPassenger(7,'A')
+obj.ADD_PASSENGER(1)
+obj.ADD_PASSENGER(2)
+obj.START_POD(1)
+obj.PRINT_Q()
+obj.ADD_PASSENGER(1)
+obj.PRINT_Q()
+obj.START_POD(2)
+obj.START_POD(1)
